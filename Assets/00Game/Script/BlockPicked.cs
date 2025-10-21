@@ -54,7 +54,8 @@ public class BlockPicked : MonoBehaviour
         if (blockA.Type == blockB.Type)
         {
             bool IsConnected = false;
-            if (_connection.CheckLineFree(blockA.Row, blockA.Col, blockB.Row, blockB.Col))
+            if (_connection.CheckLineFree
+            (blockA.Row, blockA.Col, blockB.Row, blockB.Col))
             {
                 Debug.Log("check line free");
                 IsConnected = true;
@@ -64,8 +65,13 @@ public class BlockPicked : MonoBehaviour
                 Debug.Log("check one path");
                 IsConnected = true;
             }
+            else if (_connection.CheckTwoPath(blockA, blockB))
+            {
+                Debug.Log("check TWO path");
+                IsConnected = true;
+            }
 
-            if(IsConnected)
+            if (IsConnected)
             {
                 this.WhenConnected(blockA, blockB);
             }

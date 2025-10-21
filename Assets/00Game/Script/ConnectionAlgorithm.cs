@@ -2,14 +2,24 @@ using UnityEngine;
 
 public class ConnectionAlgorithm : MonoBehaviour
 {
+    class VirtualBlock
+    {
+        public int Row, Col;
+        public VirtualBlock(int Row, int Col)
+        {
+            this.Row = Row;
+            this.Col = Col;
+        }
+    }
+    
     public bool CheckLineFree(int rA, int cA, int rB, int cB)
     {
         if (rA != rB && cB != cA) return false;
         if (rA == rB)
         {
             // Dùng Min và Max để đảm bảo vòng lặp luôn đúng chiều
-        int minCol = Mathf.Min(cA, cB);
-        int maxCol = Mathf.Max(cA, cB);
+            int minCol = Mathf.Min(cA, cB);
+            int maxCol = Mathf.Max(cA, cB);
             for (int i = minCol + 1; i < maxCol; i++)
             {
                 if (GameController2.Instance.CheckType(rA, i) != BlockType.Empty)
@@ -22,8 +32,8 @@ public class ConnectionAlgorithm : MonoBehaviour
         else if (cA == cB)
         {
             // Dùng Min và Max để đảm bảo vòng lặp luôn đúng chiều
-        int minRow = Mathf.Min(rA, rB);
-        int maxRow = Mathf.Max(rA, rB);
+            int minRow = Mathf.Min(rA, rB);
+            int maxRow = Mathf.Max(rA, rB);
             for (int i = minRow + 1; i < maxRow; i++)
             {
                 if (GameController2.Instance.CheckType(i, cA) != BlockType.Empty)
@@ -36,8 +46,13 @@ public class ConnectionAlgorithm : MonoBehaviour
         Debug.Log("line free");
         return true;
     }
+    public bool CheckOnePath (BlockButton blockA, BlockButton blockB)
+    {
+        return CheckOnePathByVirtual(new VirtualBlock(blockA.Row, blockA.Col),
+        new VirtualBlock(blockB.Row, blockB.Col));
+    }
 
-    public bool CheckOnePath(BlockButton blockA, BlockButton blockB)
+    bool CheckOnePathByVirtual(VirtualBlock blockA, VirtualBlock blockB)
     {
         int rA = blockA.Row;
         int cA = blockA.Col;
@@ -65,15 +80,72 @@ public class ConnectionAlgorithm : MonoBehaviour
         return false;
     }
 
-    // public bool CheckTwoPath(int VisualR, int VisualC, int TargetRow, int TargetCol)
-    // {
-    //     BlockButton blockA;
-    //     BlockButton blockB;
-    //     blockA.Row = VisualR;
-    //     blockA.Col = VisualC;
-    //     blockB.Row = TargetRow;
-    //     blockB.Col = TargetCol;
+    public bool CheckTwoPath(BlockButton blockA, BlockButton blockB)
+    {
+        return this.CheckTwoPathByVirtual(new VirtualBlock(blockA.Row, blockA.Col),
+        new VirtualBlock(blockB.Row, blockB.Col));
+    }
 
-    // }
+    bool CheckTwoPathByVirtual(VirtualBlock blockA, VirtualBlock blockB)
+    {
+        int rA = blockA.Row;
+        int cA = blockA.Col;
+        int rB = blockB.Row;
+        int cB = blockB.Col;
+
+        for (int i = rA + 1; i < GameController2.Instance.InternalRows + 1; i++)
+        {
+            if (GameController2.Instance.CheckType(i, cA) != BlockType.Empty)
+            {
+                break;
+            }
+            VirtualBlock P = new VirtualBlock(i, cA);
+            if (this.CheckOnePathByVirtual(P, blockB))
+            {
+                Debug.Log("2 path");
+                return true;
+            }
+        }
+        for (int i = rA -1; i >= -1 ; i--)
+        {
+            if (GameController2.Instance.CheckType(i, cA) != BlockType.Empty)
+            {
+                break;
+            }
+            VirtualBlock P = new VirtualBlock(i, cA);
+            if (this.CheckOnePathByVirtual(P, blockB))
+            {
+                Debug.Log("2 path");
+                return true;
+            }
+        }
+        for (int i = cA + 1; i < GameController2.Instance.InternalCols +1; i++)
+        {
+            if (GameController2.Instance.CheckType(rA,i) != BlockType.Empty)
+            {
+                break;
+            }
+            VirtualBlock P = new VirtualBlock(rA,i);
+            if (this.CheckOnePathByVirtual(P, blockB))
+            {
+                Debug.Log("2 path");
+                return true;
+            }
+        }
+           for(int i = cA - 1; i >= -1;i--)
+        {
+            if (GameController2.Instance.CheckType(rA,i) != BlockType.Empty)
+            {
+                break;
+            }
+            VirtualBlock P = new VirtualBlock(rA,i);
+            if(this.CheckOnePathByVirtual(P,blockB))
+            {
+                Debug.Log("2 path");
+               return true;
+            }
+        }
+        return false;
+    }
     
 }

@@ -47,9 +47,8 @@ public class BlockButton : MonoBehaviour
     }
     void OnBlockChange()
     {
-        //_block.image.color = Color.green;
-        //  Debug.Log(GameController2.Instance._blockMatrix[Row,Col]);
-        Debug.Log("logicmatrix: " + GameController2.Instance.logicMatrix[Row + 1, Col + 1] +
+        Debug.Log("logicmatrix: " +
+        GameController2.Instance.logicMatrix[Row + 1, Col + 1] +
         " / " + this.Type);
         Debug.Log("Tọa độ: " + this.Row + " / " + this.Col);
         BlockPicked.Instance.Selected(this);
