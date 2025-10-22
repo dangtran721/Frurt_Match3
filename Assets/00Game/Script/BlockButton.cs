@@ -48,7 +48,7 @@ public class BlockButton : MonoBehaviour
     void OnBlockChange()
     {
         Debug.Log("logicmatrix: " +
-        GameController2.Instance.logicMatrix[Row + 1, Col + 1] +
+        GameController.Instance.logicMatrix[Row + 1, Col + 1] +
         " / " + this.Type);
         Debug.Log("Tọa độ: " + this.Row + " / " + this.Col);
         BlockPicked.Instance.Selected(this);

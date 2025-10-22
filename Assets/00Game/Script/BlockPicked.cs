@@ -83,7 +83,7 @@ public class BlockPicked : MonoBehaviour
     {
         // 5. TODO: Kích hoạt hiệu ứng rơi gạch
         // FindObjectOfType<GameController>().HandleTilesDestroyed(blockA.Row, blockA.Col, blockB.Row, blockB.Col);
-        GameController2.Instance.OnBlockDestroy
+        GameController.Instance.OnBlockDestroy
         (blockA.Row, blockA.Col, blockB.Row, blockB.Col);
             
         Debug.Log("Match successful! Destroying blocks.");

@@ -127,7 +127,7 @@ namespace DVAH.Lib
                 SetChildAlongAxis(item, 1, yPos, cellSize.y); // trục Y
             }
             _turnOn = false;
-            GameController2.Instance.Suffer();
+            GameController.Instance.Suffer();
         }
 
         public override void SetLayoutHorizontal()

@@ -2,11 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameController2 : MonoBehaviour
+public class GameController : MonoBehaviour
 {
     #region Singleton
-    private static GameController2 _instance;
-    public static GameController2 Instance => _instance;
+    private static GameController _instance;
+    public static GameController Instance => _instance;
     void Awake()
     {
         if (_instance != null && _instance != this)
@@ -71,23 +71,6 @@ public class GameController2 : MonoBehaviour
         }
     }
 
-    // void Suffer(List<BlockButton> list)
-    // {
-    //     for (int i = list.Count - 1; i > 0; i--)
-    //     {
-    //         int rand = Random.Range(0, i + 1);
-    //         BlockButton blockA = list[i];
-    //         BlockButton blockB = list[rand];
-    //         (blockB.rect.anchoredPosition, blockA.rect.anchoredPosition) =
-    //         (blockA.rect.anchoredPosition, blockB.rect.anchoredPosition);
-
-
-
-    //         // Vector3 temp = blockA.rect.anchoredPosition;
-    //         // blockA.rect.anchoredPosition = blockB.rect.anchoredPosition;
-    //         // blockB.rect.anchoredPosition = temp;
-    //     }
-    // }
    public void Suffer()
     {
         for (int r = 0; r < InternalRows; r++)
@@ -119,7 +102,6 @@ public class GameController2 : MonoBehaviour
                 logicMatrix[r + 1, c + 1] = block.Type;
                 Debug.Log("update visual: " + logicMatrix[r + 1, c + 1]);
                 block.rect.position = targetBG.rect.position;
-
             }
         }
 

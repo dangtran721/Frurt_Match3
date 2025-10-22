@@ -22,7 +22,7 @@ public class ConnectionAlgorithm : MonoBehaviour
             int maxCol = Mathf.Max(cA, cB);
             for (int i = minCol + 1; i < maxCol; i++)
             {
-                if (GameController2.Instance.CheckType(rA, i) != BlockType.Empty)
+                if (GameController.Instance.CheckType(rA, i) != BlockType.Empty)
                 {
                     Debug.Log("line blocked");
                     return false;
@@ -36,7 +36,7 @@ public class ConnectionAlgorithm : MonoBehaviour
             int maxRow = Mathf.Max(rA, rB);
             for (int i = minRow + 1; i < maxRow; i++)
             {
-                if (GameController2.Instance.CheckType(i, cA) != BlockType.Empty)
+                if (GameController.Instance.CheckType(i, cA) != BlockType.Empty)
                 {
                     Debug.Log("line blocked");
                     return false;
@@ -58,7 +58,7 @@ public class ConnectionAlgorithm : MonoBehaviour
         int cA = blockA.Col;
         int rB = blockB.Row;
         int cB = blockB.Col;
-        if (GameController2.Instance.CheckType(rA, cB) == BlockType.Empty)
+        if (GameController.Instance.CheckType(rA, cB) == BlockType.Empty)
         {//c1 (rA, cB)
             if (this.CheckLineFree(rA, cA, rA, cB) &&
             this.CheckLineFree(rA, cB, rB, cB))
@@ -67,7 +67,7 @@ public class ConnectionAlgorithm : MonoBehaviour
                 return true;
             }
         }
-        else if (GameController2.Instance.CheckType(rB, cA) == BlockType.Empty)
+        else if (GameController.Instance.CheckType(rB, cA) == BlockType.Empty)
         {//c2 (rB, cA)
             if (this.CheckLineFree(rA, cA, rB, cA) &&
             this.CheckLineFree(rB, cA, rB, cB))
@@ -93,9 +93,9 @@ public class ConnectionAlgorithm : MonoBehaviour
         int rB = blockB.Row;
         int cB = blockB.Col;
 
-        for (int i = rA + 1; i < GameController2.Instance.InternalRows + 1; i++)
+        for (int i = rA + 1; i < GameController.Instance.InternalRows + 1; i++)
         {
-            if (GameController2.Instance.CheckType(i, cA) != BlockType.Empty)
+            if (GameController.Instance.CheckType(i, cA) != BlockType.Empty)
             {
                 break;
             }
@@ -108,7 +108,7 @@ public class ConnectionAlgorithm : MonoBehaviour
         }
         for (int i = rA -1; i >= -1 ; i--)
         {
-            if (GameController2.Instance.CheckType(i, cA) != BlockType.Empty)
+            if (GameController.Instance.CheckType(i, cA) != BlockType.Empty)
             {
                 break;
             }
@@ -119,9 +119,9 @@ public class ConnectionAlgorithm : MonoBehaviour
                 return true;
             }
         }
-        for (int i = cA + 1; i < GameController2.Instance.InternalCols +1; i++)
+        for (int i = cA + 1; i < GameController.Instance.InternalCols +1; i++)
         {
-            if (GameController2.Instance.CheckType(rA,i) != BlockType.Empty)
+            if (GameController.Instance.CheckType(rA,i) != BlockType.Empty)
             {
                 break;
             }
@@ -134,7 +134,7 @@ public class ConnectionAlgorithm : MonoBehaviour
         }
            for(int i = cA - 1; i >= -1;i--)
         {
-            if (GameController2.Instance.CheckType(rA,i) != BlockType.Empty)
+            if (GameController.Instance.CheckType(rA,i) != BlockType.Empty)
             {
                 break;
             }
