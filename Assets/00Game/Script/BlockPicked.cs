@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -16,79 +17,149 @@ public class BlockPicked : MonoBehaviour
         _instance = this;
     }
     #endregion
-    ConnectionAlgorithm _connection;
-    [SerializeField] List<BlockButton> List = new();
+
+    private ConnectionAlgorithm _connection;
+    [SerializeField] private List<BlockButton> _selected = new();
+
+    [SerializeField] private LineRenderer lineRenderer;
+
+    [SerializeField] private RectTransform _lineContainer;
 
     void OnEnable()
     {
-        _connection = this.GetComponent<ConnectionAlgorithm>();
+        _connection = GetComponent<ConnectionAlgorithm>();
+
+        // Khởi tạo trạng thái cho LineRenderer
+        if (lineRenderer != null)
+        {
+            lineRenderer.positionCount = 0;
+            lineRenderer.enabled = false;
+        }
+        else
+        {
+            Debug.LogError("Chưa gán LineRenderer vào BlockPicked!");
+        }
     }
+
     public void Selected(BlockButton block)
     {
-        if (List.Contains(block))
+        if (_selected.Contains(block))
         {
-            this.UnSelected(block);
+            _selected.Remove(block);
             return;
         }
-        if (List.Count < 2)
+
+        _selected.Add(block);
+
+        if (_selected.Count == 2)
         {
-            List.Add(block);
+            CheckMatch();
         }
-        if (List.Count >= 2)
-        {
-            this.CheckMatch();
-        }
-    }
-    
-    public void UnSelected(BlockButton block)
-    {
-        if (block == null) return;
-        List.Remove(block);
     }
 
     void CheckMatch()
     {
-        Debug.Log("Check Match");
-        BlockButton blockA = List[0];
-        BlockButton blockB = List[1];
-        if (blockA.Type == blockB.Type)
-        {
-            bool IsConnected = false;
-            if (_connection.CheckLineFree
-            (blockA.Row, blockA.Col, blockB.Row, blockB.Col))
-            {
-                Debug.Log("check line free");
-                IsConnected = true;
-            }
-            else if (_connection.CheckOnePath(blockA, blockB))
-            {
-                Debug.Log("check one path");
-                IsConnected = true;
-            }
-            else if (_connection.CheckTwoPath(blockA, blockB))
-            {
-                Debug.Log("check TWO path");
-                IsConnected = true;
-            }
+        if (_selected.Count < 2) return;
 
-            if (IsConnected)
+        BlockButton A = _selected[0];
+        BlockButton B = _selected[1];
+
+        if (A.Type == B.Type)
+        {
+            List<ConnectionAlgorithm.VirtualBlock> path = _connection.FindPath(A, B);
+            if (path != null && path.Count >= 2)
             {
-                this.WhenConnected(blockA, blockB);
+                DrawConnectionLine(path);
+                WhenConnected(A, B);
             }
         }
-        List.Clear();
-    }
-
-    void WhenConnected(BlockButton blockA, BlockButton blockB)
-    {
-        // 5. TODO: Kích hoạt hiệu ứng rơi gạch
-        // FindObjectOfType<GameController>().HandleTilesDestroyed(blockA.Row, blockA.Col, blockB.Row, blockB.Col);
-        GameController.Instance.OnBlockDestroy
-        (blockA.Row, blockA.Col, blockB.Row, blockB.Col);
-            
-        Debug.Log("Match successful! Destroying blocks.");
-        Destroy(blockA.gameObject);
-        Destroy(blockB.gameObject);
+        _selected.Clear();
     }
     
+
+    void WhenConnected(BlockButton a, BlockButton b)
+    {
+        GameController.Instance.OnBlockDestroy(a.Row, a.Col, b.Row, b.Col);
+        Destroy(a.gameObject);
+        Destroy(b.gameObject);
+    }
+    // ==
+    Vector2 ToContainerLocalPos(RectTransform rect)
+    {
+        Canvas canvas = _lineContainer.GetComponentInParent<Canvas>();
+        Vector2 screen = RectTransformUtility.WorldToScreenPoint
+        (canvas.worldCamera, rect.position);
+        RectTransformUtility.ScreenPointToLocalPointInRectangle
+        (
+            _lineContainer, screen, canvas.renderMode ==
+            RenderMode.ScreenSpaceCamera ? canvas.worldCamera : null,
+            out Vector2 local
+        );
+        return local;
+    }
+
+    Vector2 ToContainerLocalPos(ConnectionAlgorithm.VirtualBlock vb)
+    {
+        int r = Mathf.Clamp(vb.Row, 0, GameController.Instance.InternalRows - 1);
+        int c = Mathf.Clamp(vb.Col, 0, GameController.Instance.InternalCols - 1);
+
+        BGBlock bg = GameController.Instance._bgMatrix[r, c];
+        if (bg == null || bg.rect == null) return Vector2.zero;
+
+        Vector2 baseLocal = ToContainerLocalPos(bg.rect);
+
+        // Tính toán kích thước cell từ BGBlock
+        // Quan trọng: Phải lấy kích thước đã scale thực tế của RectTransform
+        float cellW = bg.rect.rect.width;
+        float cellH = bg.rect.rect.height;
+
+        float dRow = vb.Row - r;
+        float dCol = vb.Col - c;
+
+        // Trục Y của UI ngược với trục Row (Row tăng -> Y giảm)
+        return baseLocal + new Vector2(dCol * cellW, -dRow * cellH);
+    }
+// ==
+    void DrawConnectionLine(List<ConnectionAlgorithm.VirtualBlock> path)
+    {
+        if (lineRenderer == null || path == null || path.Count < 2) return;
+
+        // Set số lượng điểm cho LineRenderer
+        lineRenderer.positionCount = path.Count;
+
+        // Chuyển đổi List<VirtualBlock> thành mảng Vector3 (local)
+        Vector3[] positions = new Vector3[path.Count];
+        for (int i = 0; i < path.Count; i++)
+        {
+            // Lấy tọa độ local (Vector2) trong _lineContainer
+            Vector2 localPos = ToContainerLocalPos(path[i]);
+
+            // Gán vào mảng (Z = 0 vì là 2D UI)
+            positions[i] = new Vector3(localPos.x, localPos.y, 0);
+        }
+
+        // Gán toàn bộ các điểm cho LineRenderer
+        lineRenderer.SetPositions(positions);
+
+        // Hiển thị line
+        lineRenderer.enabled = true;
+
+        // Bắt đầu Coroutine để ẩn line sau 1 khoảng thời gian
+        StartCoroutine(DestroyLinesAfterDelay(0.3f));
+    }
+
+    IEnumerator DestroyLinesAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        ClearLines();
+    }
+
+    void ClearLines()
+    {
+        if (lineRenderer != null)
+        {
+             lineRenderer.enabled = false;
+            lineRenderer.positionCount = 0;
+        }
+    }
 }

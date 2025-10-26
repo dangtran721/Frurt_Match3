@@ -50,10 +50,10 @@ public class GameController : MonoBehaviour
         _bgMatrix = new BGBlock[InternalRows, InternalCols];
         for (int r = 0; r < InternalRows; r++)
         {
-            Debug.Log("row");
+           // Debug.Log("row");
             for (int c = 0; c < InternalCols; c++)
             {
-                Debug.Log("col");
+                //Debug.Log("col");
                 BlockButton Block = this.BlockSpawner();
                 Block.Row = r;
                 Block.Col = c;
@@ -82,7 +82,7 @@ public class GameController : MonoBehaviour
                 BlockButton blockA = _blockMatrix[r, c];
                 BlockButton blockB = _blockMatrix[randR, randC];
                 (_blockMatrix[r, c], _blockMatrix[randR, randC]) = (blockB, blockA);
-                Debug.Log("suffer");
+              //  Debug.Log("suffer");
             }
         }
         this.UpdateAllBlockVisuals();
@@ -100,7 +100,7 @@ public class GameController : MonoBehaviour
                 block.Col = c;
                 block.Row = r;
                 logicMatrix[r + 1, c + 1] = block.Type;
-                Debug.Log("update visual: " + logicMatrix[r + 1, c + 1]);
+              //  Debug.Log("update visual: " + logicMatrix[r + 1, c + 1]);
                 block.rect.position = targetBG.rect.position;
             }
         }
@@ -111,7 +111,7 @@ public class GameController : MonoBehaviour
     {
         logicMatrix[rA + 1, cA + 1] = BlockType.Empty;
         logicMatrix[rB + 1, cB + 1] = BlockType.Empty;
-        Debug.Log(logicMatrix[rA + 1, cA + 1] + "/" + logicMatrix[rB + 1, cB + 1]);
+        //Debug.Log(logicMatrix[rA + 1, cA + 1] + "/" + logicMatrix[rB + 1, cB + 1]);
         // Gán null để tránh lỗi tham chiếu đến đối tượng đã bị hủy
         _blockMatrix[rA, cA] = null;
         _blockMatrix[rB, cB] = null;
