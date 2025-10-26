@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class BlockPicked : MonoBehaviour
 {
@@ -45,14 +46,17 @@ public class BlockPicked : MonoBehaviour
     {
         if (_selected.Contains(block))
         {
+            block.BorderImage.gameObject.SetActive(false);
             _selected.Remove(block);
             return;
         }
+        block.BorderImage.gameObject.SetActive(true);
 
         _selected.Add(block);
 
         if (_selected.Count == 2)
         {
+            
             CheckMatch();
         }
     }
@@ -63,7 +67,8 @@ public class BlockPicked : MonoBehaviour
 
         BlockButton A = _selected[0];
         BlockButton B = _selected[1];
-
+        A.BorderImage.gameObject.SetActive(false);
+        B.BorderImage.gameObject.SetActive(false);
         if (A.Type == B.Type)
         {
             List<ConnectionAlgorithm.VirtualBlock> path = _connection.FindPath(A, B);

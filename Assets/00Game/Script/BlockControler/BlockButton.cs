@@ -30,7 +30,7 @@ public class BlockButton : MonoBehaviour
     [SerializeField] public BGBlock CurrentBG;
    public RectTransform rect;
     Button _block;
-
+    public Image BorderImage;
     [SerializeField] public int Row, Col;
 
 
@@ -38,6 +38,10 @@ public class BlockButton : MonoBehaviour
     {
         _block = this.GetComponent<Button>();
         rect = this.GetComponent<RectTransform>();
+         BorderImage = this.GetComponentInChildren<Image>();
+        BorderImage.color = Color.green;
+        BorderImage.gameObject.SetActive(false);
+
         this.StringToEnum();
     }
     public BlockButton Init()
@@ -47,11 +51,6 @@ public class BlockButton : MonoBehaviour
     }
     void OnBlockChange()
     {
-        // Debug.Log("logicmatrix: " +
-        // GameController.Instance.logicMatrix[Row + 1, Col + 1] +" /" +
-        // " Tọa độ: " + this.Row + " / " + this.Col +
-        // " / " + this.Type);
-
         BlockPicked.Instance.Selected(this);
     }
     
