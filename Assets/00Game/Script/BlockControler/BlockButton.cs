@@ -38,7 +38,7 @@ public class BlockButton : MonoBehaviour
     {
         _block = this.GetComponent<Button>();
         rect = this.GetComponent<RectTransform>();
-         BorderImage = this.GetComponentInChildren<Image>();
+        BorderImage = this.GetComponentInChildren<Image>();
         BorderImage.color = Color.green;
         BorderImage.gameObject.SetActive(false);
 
