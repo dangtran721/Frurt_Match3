@@ -8,6 +8,7 @@ public class GamePlayUI : MonoBehaviour
 {
     [SerializeField] Image _modelTimeSlide;
     [SerializeField] TextMeshProUGUI _scoreText;
+    [SerializeField] Button PausedBtn;
     [SerializeField] float TimeMax = 60;
     int Score = 0;
     float TimeLeft = 0;
@@ -22,8 +23,14 @@ public class GamePlayUI : MonoBehaviour
     {
         EventBus.Instance.Sub(Constant.GainScore, this.GainScore);
         EventBus.Instance.Sub(Constant.GainTime, this.GainTime);
+        PausedBtn.onClick.AddListener(this.OnPausedClick);
         _scoreText.text = Score.ToString();
         TimeLeft = TimeMax;
+    }
+
+    void OnPausedClick()
+    {
+        
     }
 
     void TimeSlideControl()

@@ -88,7 +88,7 @@ public class GameController : MonoBehaviour
         this.UpdateAllBlockVisuals();
     }
 
-    void UpdateAllBlockVisuals()
+    public void UpdateAllBlockVisuals()
     {
         for (int r = 0; r < InternalRows; r++)
         {

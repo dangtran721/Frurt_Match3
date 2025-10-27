@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class BlockPicked : MonoBehaviour
 {
@@ -80,7 +79,6 @@ public class BlockPicked : MonoBehaviour
         }
         _selected.Clear();
     }
-    
 
     void WhenConnected(BlockButton a, BlockButton b)
     {
@@ -165,8 +163,13 @@ public class BlockPicked : MonoBehaviour
     {
         if (lineRenderer != null)
         {
-             lineRenderer.enabled = false;
+            lineRenderer.enabled = false;
             lineRenderer.positionCount = 0;
         }
+    }
+    
+    void BlockMove ()
+    {
+        
     }
 }
