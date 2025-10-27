@@ -4,6 +4,20 @@ using UnityEngine;
 
 public class EventBus : MonoBehaviour
 {
+    #region Singleton
+    private static EventBus _instance;
+    public static EventBus Instance => _instance;
+    void Awake()
+    {
+        if (_instance != null && _instance != this)
+        {
+            Destroy(this);
+            return;
+        }
+        _instance = this;
+    }
+    #endregion
+    
     Dictionary<string, List<Action<object[]>>> busEvent = new();
 
     public void Sub(string key, Action<object[]> action)
