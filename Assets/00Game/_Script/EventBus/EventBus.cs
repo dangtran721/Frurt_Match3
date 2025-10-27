@@ -17,7 +17,7 @@ public class EventBus : MonoBehaviour
         _instance = this;
     }
     #endregion
-    
+
     Dictionary<string, List<Action<object[]>>> busEvent = new();
 
     public void Sub(string key, Action<object[]> action)

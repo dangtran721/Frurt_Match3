@@ -84,6 +84,8 @@ public class BlockPicked : MonoBehaviour
 
     void WhenConnected(BlockButton a, BlockButton b)
     {
+        EventBus.Instance.Notify(Constant.GainScore);
+        EventBus.Instance.Notify(Constant.GainTime);
         GameController.Instance.OnBlockDestroy(a.Row, a.Col, b.Row, b.Col);
         Destroy(a.gameObject);
         Destroy(b.gameObject);
